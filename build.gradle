@@ -1,0 +1,103 @@
+plugins {
+  id 'java'
+  id 'idea'
+}
+
+tasks.withType(JavaCompile).configureEach {
+  options.encoding = "UTF-8"
+}
+
+group = 'nulll.fybug.pdseqgenerator'
+version = '0.0.1'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(23)
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  google()
+  maven { url 'https://maven.aliyun.com/repository/releases' }
+  maven { url "https://maven.aliyun.com/repository/jcenter" }
+  maven { url "https://maven.aliyun.com/repository/mapr-public" }
+  maven { url "https://maven.aliyun.com/repository/staging-alpha" }
+  maven { url "https://maven.aliyun.com/repository/central" }
+  maven { url "https://maven.aliyun.com/repository/public/" }
+  maven { url "https://maven.aliyun.com/repository/google" }
+  maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+  maven { url "https://maven.aliyun.com/repository/spring" }
+  maven { url "https://maven.aliyun.com/repository/spring-plugin" }
+  maven { url "https://maven.aliyun.com/repository/grails-core" }
+  maven { url "https://maven.aliyun.com/repository/snapshots" }
+  maven { url "https://maven.aliyun.com/repository/apache-snapshots" }
+  maven { url "https://maven.aliyun.com/repository/staging-alpha-group" }
+}
+
+dependencies {
+  // 本地依赖
+  implementation fileTree(dir: 'lib', includes: ['*.jar'])
+
+  // 注释包
+  compileOnly "jakarta.validation:jakarta.validation-api:+"
+  compileOnly "jakarta.annotation:jakarta.annotation-api:+"
+  // lombok
+  compileOnly 'org.projectlombok:lombok:+'
+  annotationProcessor 'org.projectlombok:lombok:+'
+
+  // 注释包
+  testCompileOnly "jakarta.validation:jakarta.validation-api:+"
+  testCompileOnly "jakarta.annotation:jakarta.annotation-api:+"
+  // lombok
+  testCompileOnly "org.projectlombok:lombok:+"
+  testAnnotationProcessor "org.projectlombok:lombok:+"
+  testImplementation platform('org.junit:junit-bom:5.10.0')
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter:5.12.0-RC2"
+}
+
+test {
+  dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter:5.12.0-RC2"
+  }
+  useJUnitPlatform()
+}
+
+/** 清单文件内容 */
+tasks.withType(Jar).configureEach {
+  destinationDirectory = file('jar')
+  manifest {
+    attributes('Manifest-Version': '1.0',
+               'Built-By': 'fybug/风雨bu改',
+               'Build-Jdk-Spec': 23,
+               'Bundle-Description': 'java ID生成器',
+               'Bundle-Name': 'PDSeqGenerator',
+               //							 'Bundle-DocURL': 'https://apidoc.gitee.com/fybug/PDConcurrent/',
+               'Bundle-Vendor': 'IntelliJ IDEA',
+               'Bundle-Version': version,
+               'Bundle-License': 'https://www.apache.org/licenses/LICENSE-2.0',
+               'Created-By': 'Gradle 8.10.2')
+  }
+}
+
+/** 编译包 */
+tasks.register('PDSeqGenerator_bin', Jar) {
+  archiveFileName = 'PDSeqGenerator_bin.jar'
+  archiveClassifier = 'bin'
+  // 打包编译输出
+  from sourceSets.main.output
+}
+
+/** 源码包 */
+tasks.register('PDSeqGenerator_sources', Jar) {
+  archiveFileName = 'PDSeqGenerator_sources.jar'
+  archiveClassifier = 'sources'
+  // 打包源码
+  from sourceSets.main.allSource
+}
+
+tasks.register('release') {
+  dependsOn PDSeqGenerator_bin
+  dependsOn PDSeqGenerator_sources
+}
