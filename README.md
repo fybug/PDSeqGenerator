@@ -39,5 +39,5 @@ java用ID序列生成工具
 
 ### 提供bug反馈或建议
 
-- [码云Gitee](https://gitee.com/PatternDirClean/PDConcurrent/issues)
-- [Github](https://github.com/PatternDirClean/PDConcurrent/issues)
+- [码云Gitee](https://gitee.com/fybug/pdseq-generator/issues)
+- [Github](https://github.com/fybug/PDSeqGenerator/issues)
